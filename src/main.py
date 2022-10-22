@@ -14,7 +14,6 @@ def setup():
         world.add_food(world.get_free_pos())
 
     for i in range(0, 5):
-
         agent_x = Agent(world.get_free_pos(), world)
         world.add_agent(agent_x)
 

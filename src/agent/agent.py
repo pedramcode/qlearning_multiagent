@@ -18,6 +18,7 @@ class Agent(object):
     __hunger = None
     __world = None
     __brain = None
+    __vision = None
 
 
     def __init__(self, pos: Pos, world):
@@ -26,6 +27,7 @@ class Agent(object):
         self.__brain = Brain(7, 4)
         self.__health = random.randrange(10, 101)
         self.__hunger = random.randrange(10, 101)
+        self.__vision = random.randrange(1, 30)
     
 
     def is_dead(self) -> bool:
@@ -175,12 +177,10 @@ class Agent(object):
         pos = self.__pos
 
         foods = self.__world.get_foods()
-        closest_food = None
+        closest_food = -1
         for food in foods:
             dist = floor(math.sqrt(math.pow(pos.x() - food.x(), 2) + math.pow(pos.y() - food.y(), 2)))
-            if closest_food == None:
-                closest_food = dist
-            if dist < closest_food:
+            if dist < closest_food and dist <= self.__vision:
                 closest_food = dist
         state.append(closest_food)
 
