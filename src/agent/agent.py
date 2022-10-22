@@ -100,7 +100,8 @@ class Agent(object):
         horny = random.random() > 0.2
         if horny:
             mate = self.get_mate()
-            if mate and mate.get_sex() != self.__sex:
+            is_gay = mate.get_sex() != self.__sex
+            if mate and not is_gay:
                 if self.__health > 60 and mate.get_health() > 60:
                     # Make baby
                     self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
@@ -112,6 +113,10 @@ class Agent(object):
                         self.damage(10)
                     elif mate.get_sex() == Sex.FEMALE:
                         mate.damage(10)
+            elif mate and is_gay:
+                # Gay sex
+                self.hungry(10)
+                mate.hungry(10)
 
 
         # Choose action
