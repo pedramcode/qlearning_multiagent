@@ -12,6 +12,11 @@ class Dir(Enum):
     LEFT=3
 
 
+class Sex(Enum):
+    MALE=0
+    FEMALE=1
+
+
 class Agent(object):
     __pos = None
     __health = None
@@ -19,6 +24,7 @@ class Agent(object):
     __world = None
     __brain = None
     __vision = None
+    __sex = None
 
 
     def __init__(self, pos: Pos, world):
@@ -28,10 +34,15 @@ class Agent(object):
         self.__health = random.randrange(10, 101)
         self.__hunger = random.randrange(10, 101)
         self.__vision = random.randrange(1, 30)
+        self.__sex = Sex.MALE if random.random() > 0.5 else Sex.FEMALE
     
 
     def is_dead(self) -> bool:
         return self.__health <= 0
+
+    
+    def get_sex(self) -> Sex:
+        return self.__sex
     
 
     def get_pos(self) -> Pos:
@@ -64,6 +75,17 @@ class Agent(object):
             else:
                 self.__pos.set_x(self.__pos.x()-1)
                 self.hungry(1)
+    
+
+    def get_mate(self):
+        res = None
+
+        for agent in self.__world.get_agents():
+            if agent == self:
+                continue
+            if Pos.distance(self.__pos, agent.get_pos()) <= 2:
+                return agent
+        return res
 
     
     def update(self) -> None:
@@ -73,9 +95,28 @@ class Agent(object):
             self.heal(1)
             self.hungry(1)
         
+
+        # Sex
+        want_sex = random.random() > 0.2
+        if want_sex:
+            mate = self.get_mate()
+            if mate and mate.get_sex() != self.__sex:
+                if self.__health > 60 and mate.get_health() > 60:
+                    # Make baby
+                    self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
+                    self.hungry(10)
+                    mate.hungry(10)
+                    
+                    # Damage female
+                    if self.__sex == Sex.FEMALE:
+                        self.damage(10)
+                    elif mate.get_sex() == Sex.FEMALE:
+                        mate.damage(10)
+
+
+        # Choose action
         eps = 0.2
         dice = random.random()
-
         if self.__world.is_food_at(self.__pos, True):
             self.heal(10)
             self.eat(10)
@@ -163,6 +204,12 @@ class Agent(object):
         stroke(30, 120, 40)
         rect((x1, y1), grid_w, grid_h)
 
+        if self.__sex == Sex.MALE:
+            ellipse_mode(CENTER)
+            fill(0, 0, 0, 150)
+            no_stroke()
+            ellipse((x1 + grid_w/2, y1 + grid_h/2), grid_w-10, grid_w-10)
+
         pop()
     
 
@@ -179,7 +226,7 @@ class Agent(object):
         foods = self.__world.get_foods()
         closest_food = -1
         for food in foods:
-            dist = floor(math.sqrt(math.pow(pos.x() - food.x(), 2) + math.pow(pos.y() - food.y(), 2)))
+            dist = Pos.distance(pos, food)
             if dist < closest_food and dist <= self.__vision:
                 closest_food = dist
         state.append(closest_food)

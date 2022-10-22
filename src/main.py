@@ -13,14 +13,16 @@ def setup():
     for i in range(0, 10):
         world.add_food(world.get_free_pos())
 
-    for i in range(0, 5):
+    for i in range(0, 20):
         agent_x = Agent(world.get_free_pos(), world)
         world.add_agent(agent_x)
 
 def draw():
     global world
 
-    world.update()
+    for i in range(0, 10):
+        world.update()
+        print("Step: ", i)
     world.render()
 
 if __name__ == "__main__":

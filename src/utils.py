@@ -1,3 +1,4 @@
+import math
 
 
 class Size():
@@ -40,7 +41,7 @@ class Size():
         self.__width = height
 
 
-class Pos():
+class Pos(object):
     """
         General model for pos (width, height)
     """
@@ -58,12 +59,21 @@ class Pos():
     @staticmethod
     def from_list(lst):
         return Pos(lst[0], lst[1])
+    
+
+    @staticmethod
+    def distance(pos1, pos2) -> int:
+        dist = math.floor(math.sqrt(math.pow(pos1.x() - pos2.x(), 2) + math.pow(pos1.y() - pos2.y(), 2)))
+        return dist
 
     def x(self):
         """
             Get x
         """
         return self.__x
+
+    def copy(self):
+        return Pos(self.__x, self.__y)
     
     def y(self):
         """

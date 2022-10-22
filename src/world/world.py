@@ -138,6 +138,10 @@ class World(object):
         return self.__blocks
     
 
+    def get_agents(self) -> list:
+        return self.__agents
+    
+
     def update(self) -> None:
         if len(self.__agents) != 0:
             for i in range(len(self.__agents)-1, -1, -1):
