@@ -14,8 +14,8 @@ class Dir(Enum):
 
 class Agent(object):
     __pos = None
-    __health = 100
-    __hunger = 100
+    __health = None
+    __hunger = None
     __world = None
     __brain = None
 
@@ -24,6 +24,8 @@ class Agent(object):
         self.__pos = pos
         self.__world = world
         self.__brain = Brain(7, 4)
+        self.__health = random.randrange(10, 101)
+        self.__hunger = random.randrange(10, 101)
     
 
     def is_dead(self) -> bool:
