@@ -114,7 +114,7 @@ class Agent(object):
                             self.damage(10)
                         elif mate.get_sex() == Sex.FEMALE:
                             mate.damage(10)
-                elif mate and is_gay:
+                elif is_gay:
                     # Gay sex
                     self.hungry(10)
                     mate.hungry(10)
