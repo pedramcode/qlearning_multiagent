@@ -13,7 +13,7 @@ def setup():
     for i in range(0, 10):
         world.add_food(world.get_free_pos())
 
-    for i in range(0, 20):
+    for i in range(0, 10):
         agent_x = Agent(world.get_free_pos(), world)
         world.add_agent(agent_x)
 

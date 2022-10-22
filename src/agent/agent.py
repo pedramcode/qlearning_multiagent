@@ -97,8 +97,8 @@ class Agent(object):
         
 
         # Sex
-        want_sex = random.random() > 0.2
-        if want_sex:
+        horny = random.random() > 0.2
+        if horny:
             mate = self.get_mate()
             if mate and mate.get_sex() != self.__sex:
                 if self.__health > 60 and mate.get_health() > 60:
