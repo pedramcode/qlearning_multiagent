@@ -5,6 +5,8 @@ from enum import Enum
 import json
 from agent import Agent
 import random
+import numpy as np
+
 
 
 class WorldEvent(Enum):
@@ -23,6 +25,8 @@ class World(object):
     __blocks = []
     __foods = []
     __agents = []
+    __state = []
+    __step = 0
 
     def __init__(self, _input):
         """
@@ -140,9 +144,19 @@ class World(object):
 
     def get_agents(self) -> list:
         return self.__agents
+
+    
+    def get_last_state(self):
+        if len(self.__state) == 0:
+            return Noneavg
+        return self.__state[len(self.__state)-1]
     
 
-    def update(self) -> None:
+    def get_state(self) -> list:
+        return self.__state
+    
+
+    def update(self, details=False) -> None:
         if len(self.__agents) != 0:
             for i in range(len(self.__agents)-1, -1, -1):
                 agent = self.__agents[i]
@@ -150,6 +164,23 @@ class World(object):
                 if agent.is_dead():
                     del self.__agents[i]
                     continue
+                
+        self.__state.append({
+            "step": self.__step,
+            "pop": len(self.__agents),
+            "pop_health": round(np.average([x.get_health() for x in self.__agents]), 2),
+            "pop_hunger": round(np.average([x.get_hunger() for x in self.__agents]), 2),
+            "food_count": len(self.__foods),
+        })
+
+        if details:
+            print(self.get_last_state())
+
+        self.__step += 1
+    
+
+    def get_step(self) -> int:
+        return self.__step
     
 
     def render(self) -> None:

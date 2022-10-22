@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plot</title>
+</head>
+<body>
+    <canvas id="myChart" width="600"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        let myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Population',
+                    data: [],
+                    borderWidth: 2,
+                    borderColor:'red',
+                },{
+                    label: 'Health',
+                    data: [],
+                    borderWidth: 2,
+                    borderColor:'green',
+                },{
+                    label: 'Hunger',
+                    data: [],
+                    borderWidth: 2,
+                    borderColor:'cyan',
+                },{
+                    label: 'Food',
+                    data: [],
+                    borderWidth: 2,
+                    borderColor:'purple',
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: "Chart.js - Dynamically Update Chart Via Ajax Requests",
+                },
+                legend: {
+                    display: false
+                },
+            }
+        });
+
+        setInterval(function(){
+            $.ajax({
+                url: "http://localhost:8080/data",
+                method: "GET",
+            }).done(function(dt){
+                const rdata = dt
+                myChart.data.labels = rdata.steps
+                myChart.data.datasets[0].data = rdata.pop
+                myChart.data.datasets[1].data = rdata.pop_health
+                myChart.data.datasets[2].data = rdata.pop_hunger
+                myChart.data.datasets[3].data = rdata.food_count
+                myChart.update();
+            })
+        }, 500)
+    </script>
+</body>
+</html>
