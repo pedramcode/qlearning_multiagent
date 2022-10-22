@@ -25,6 +25,7 @@ class Agent(object):
     __brain = None
     __vision = None
     __sex = None
+    __life_span = None
 
 
     def __init__(self, pos: Pos, world):
@@ -35,6 +36,7 @@ class Agent(object):
         self.__hunger = random.randrange(10, 101)
         self.__vision = random.randrange(1, 30)
         self.__sex = Sex.MALE if random.random() > 0.5 else Sex.FEMALE
+        self.__life_span = random.randrange(15, 100)
     
 
     def is_dead(self) -> bool:
@@ -53,28 +55,28 @@ class Agent(object):
         state = self()
         if dir == Dir.TOP:
             if state[3] == 1:
-                self.damage(5)
+                self.damage(1)
             else:
                 self.__pos.set_y(self.__pos.y()-1)
-                self.hungry(1)
+                self.hungry(0.3)
         if dir == Dir.RIGHT:
             if state[4] == 1:
-                self.damage(5)
+                self.damage(1)
             else:
                 self.__pos.set_x(self.__pos.x()+1)
-                self.hungry(1)
+                self.hungry(0.3)
         if dir == Dir.BOTTOM:
             if state[5] == 1:
-                self.damage(5)
+                self.damage(1)
             else:
                 self.__pos.set_y(self.__pos.y()+1)
-                self.hungry(1)
+                self.hungry(0.3)
         if dir == Dir.LEFT:
             if state[6] == 1:
-                self.damage(5)
+                self.damage(1)
             else:
                 self.__pos.set_x(self.__pos.x()-1)
-                self.hungry(1)
+                self.hungry(0.3)
     
 
     def get_mate(self):
@@ -89,15 +91,24 @@ class Agent(object):
 
     
     def update(self) -> None:
+        self.__life_span -= 1
+        if self.__life_span <= 0:
+            if random.random() > 0.9:
+                self.__health = 0
+                self.__hunger = 0
+            else:
+                self.damage(1)
+
         if self.__hunger < 40:
-            self.damage(1)
+            self.damage(0.3)
         if self.__health < 90 and self.__hunger > 90:
-            self.heal(1)
-            self.hungry(1)
+            self.heal(5)
+            self.hungry(3)
         
 
         # Sex
-        horny = random.random() > 0.4
+        horniness = 0 if self.__world.mean_hunger() < 30 else 0.4
+        horny = random.random() > horniness
         if horny:
             mate = self.get_mate()
             if mate:
@@ -106,29 +117,29 @@ class Agent(object):
                     if self.__health > 60 and mate.get_health() > 60:
                         # Make baby
                         self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
-                        self.hungry(10)
-                        mate.hungry(10)
+                        self.hungry(2)
+                        mate.hungry(2)
                         
                         # Damage female
                         if self.__sex == Sex.FEMALE:
-                            self.damage(10)
+                            self.damage(3)
                         elif mate.get_sex() == Sex.FEMALE:
-                            mate.damage(10)
+                            mate.damage(3)
                 elif is_gay:
                     # Gay sex
-                    self.hungry(10)
-                    mate.hungry(10)
+                    self.hungry(2)
+                    mate.hungry(2)
             else:
                 # Mastribate
-                self.hungry(10)
+                self.hungry(2.1)
 
 
         # Choose action
         eps = 0.2
         dice = random.random()
         if self.__world.is_food_at(self.__pos, True):
-            self.heal(10)
-            self.eat(10)
+            self.heal(5)
+            self.eat(5)
 
         if dice > eps:
             res = self.__brain.pulse(self())

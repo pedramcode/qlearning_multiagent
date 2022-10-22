@@ -15,10 +15,10 @@ def setup():
     global world
     world = World("./data/maps/map2.json")
     
-    for i in range(0, 20):
+    for i in range(0, 50):
         world.add_food(world.get_free_pos())
 
-    for i in range(0, 25):
+    for i in range(0, 30):
         agent_x = Agent(world.get_free_pos(), world)
         world.add_agent(agent_x)
 

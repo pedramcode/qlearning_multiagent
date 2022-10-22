@@ -156,7 +156,19 @@ class World(object):
         return self.__state
     
 
+    def mean_health(self) -> float:
+        return round(np.mean([x.get_health() for x in self.__agents]), 2)
+    
+
+    def mean_hunger(self) -> float:
+        return round(np.mean([x.get_hunger() for x in self.__agents]), 2)
+    
+
     def update(self, details=False) -> None:
+        if random.random() > 0.5:
+            for i in range(1, 5):
+                self.add_food(self.get_free_pos())
+
         if len(self.__agents) != 0:
             for i in range(len(self.__agents)-1, -1, -1):
                 agent = self.__agents[i]
@@ -168,8 +180,8 @@ class World(object):
         self.__state.append({
             "step": self.__step,
             "pop": len(self.__agents),
-            "pop_health": round(np.average([x.get_health() for x in self.__agents]), 2),
-            "pop_hunger": round(np.average([x.get_hunger() for x in self.__agents]), 2),
+            "pop_health": self.mean_health(),
+            "pop_hunger": self.mean_hunger(),
             "food_count": len(self.__foods),
         })
 
