@@ -97,7 +97,7 @@ class Agent(object):
         
 
         # Sex
-        horny = random.random() > 0.2
+        horny = random.random() > 0.4
         if horny:
             mate = self.get_mate()
             is_gay = mate.get_sex() != self.__sex
