@@ -6,7 +6,7 @@ HTTP_HOST="127.0.0.1"
 
 [ai]
 # Epsillon greedy parameter
-EPS_GREED=0.2
+EPS_GREED=0.3
 
 
 [env]
@@ -18,23 +18,23 @@ MAX_HUNGER=100
 # Minimum vision
 MIN_VISION=1
 # Maximum vision
-MAX_VISION=30
+MAX_VISION=50
 
 # Initial population number
 INIT_POPULATION=30
 
 # Minimum lifespan amount (steps) - from range
-MIN_LIFESPAN_RND=50
+MIN_LIFESPAN_RND=60
 # Maximum lifespan amount (steps) - to range
 MAX_LIFESPAN_RND=100
 
 # Male gender probability to create agent
-MALE_GENDER_PROB=0.5
+MALE_GENDER_PROB=0.4
 
 # Hitting wall damage
-HIT_WALL_DAMAGE=0.5
+HIT_WALL_DAMAGE=0
 # Amount of energy takes to walk each step
-WALKING_HUNGER=1
+WALKING_HUNGER=0.5
 
 # Probability of die when lifespan finished (Otherwise agent get damage each step)
 KILL_END_LIFE_THRESH=0.25
@@ -42,15 +42,15 @@ KILL_END_LIFE_THRESH=0.25
 ELD_DAMAGE=5
 
 # Agent takes damage if hungrier than this threshold
-UNHEALTHY_HUNGER=20
+UNHEALTHY_HUNGER=5
 # Damage on unhealthy hugner
-UNHEALTHY_HUNGER_DAMAGE=0.2
+UNHEALTHY_HUNGER_DAMAGE=0.4
 
 # ** Heal from good diet (good hunger):
 # If health is less than:
-GOOD_DIET_HEAL_HEALTH_LESS=80
+GOOD_DIET_HEAL_HEALTH_LESS=30
 # And hunger is more than:
-GOOD_DIET_HEAL_HUNGER_MORE=90
+GOOD_DIET_HEAL_HUNGER_MORE=50
 # Then heal this amount:
 GOOD_DIET_HEAL_AMOUNT=5
 # And get hungrier this amount:
@@ -59,10 +59,10 @@ GOOD_DIET_HEAL_HUNGRY_AMOUNT=5
 # Heal after eat food
 HEAL_AFTER_EAT=5
 # Raise hunger after eat food
-HUNGER_AFTER_FOOD=5
+HUNGER_AFTER_FOOD=8
 
 # Food generate chance in each step
-FOOD_GENERATE=0.5
+FOOD_GENERATE=0.3
 # Min food generate
 FOOD_MIN=1
 # Min food generate
@@ -72,11 +72,11 @@ FOOD_MAX=5
 [sex]
 # ** Sex logic:
 # If hunger was less than below amount:
-SEX_HORNY_HUNGER=20
+SEX_HORNY_HUNGER=10
 # Getting horny by this probability:
 SEX_HORNY_HUNGER_HORNY=1
 # Else get horny by this probability:
-SEX_HORNINESS=0.8
+SEX_HORNINESS=0.9
 
 # If parents health add up to:
 SEX_PARENT_HEALTH_SUM=100
@@ -87,10 +87,10 @@ SEX_PARENT_HEALTHY_BABY_MIN=1
 # And max of:
 SEX_PARENT_HEALTHY_BABY_MAX=5
 # If parents where weak there is this chance to give birth to a dead baby:
-SEX_PARENT_UNHEALTHY_DIED_BABY=0.5
+SEX_PARENT_UNHEALTHY_DIED_BABY=0.3
 
 # Cant do a new sex after sex for n steps:
-SEX_HALT_STEPS=2
+SEX_HALT_STEPS=1
 
 # Minimum health required to sex
 SEX_MIN_HEALTH=20
