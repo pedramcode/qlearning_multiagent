@@ -8,18 +8,12 @@ import numpy as np
 import math
 
 
-
-class WorldEvent(Enum):
-    GRID_CLICKED = 0
-
-
 class World(object):
     """
     The main world objects responsible to managing rendering and grid system
     """
 
     __settings: WorldSettings = None
-    __events = {}
     __is_mouse_down = False
     __draw_cursor = False
     __blocks = []
@@ -51,12 +45,6 @@ class World(object):
                 self.__blocks.append(Pos.from_list(blc))
             for fod in data["foods"]:
                 self.__foods.append(Pos.from_list(fod))
-    
-
-    def listen(self, event: WorldEvent, func) -> None:
-        self.__events.update({
-            event: func,
-        })
     
 
     def is_food_at(self, pos: Pos, remove=False) -> bool:
