@@ -16,8 +16,8 @@ class Brain(object):
         init = tf.keras.initializers.random_normal()
         model = keras.Sequential()
         model.add(keras.layers.Dense(state_shape, activation='relu', kernel_initializer=init))
-        model.add(keras.layers.Dense(24, activation='relu', kernel_initializer=init))
-        model.add(keras.layers.Dense(15, activation='relu', kernel_initializer=init))
+        model.add(keras.layers.Dense(16, activation='relu', kernel_initializer=init))
+        model.add(keras.layers.Dense(32, activation='relu', kernel_initializer=init))
         model.add(keras.layers.Dense(action_shape, activation='linear', kernel_initializer=init))
         model.compile(loss=tf.keras.losses.Huber(), optimizer=tf.keras.optimizers.Adam(lr=learning_rate), metrics=['accuracy'])
         self.__model = model

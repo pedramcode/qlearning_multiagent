@@ -1,5 +1,4 @@
 from utils import Pos
-from p5 import *
 from .brain import Brain
 import random
 from enum import Enum
@@ -202,35 +201,6 @@ class Agent(object):
         self.__hunger = self.__hunger + abs(amount)
         if self.__hunger > 100:
             self.__hunger = 100
-    
-
-    def render(self):
-        push()
-
-        x1 = self.__pos.x() * self.__world.get_grid_size().width()
-        y1 = self.__pos.y() * self.__world.get_grid_size().height()
-        grid_w = self.__world.get_grid_size().width()
-        grid_h = self.__world.get_grid_size().height()
-
-        # Draw body
-        rect_mode(CORNER)
-        stroke_weight(1)
-
-        pct_diff = 1.0 - (self.__health / 100)
-        red = min(255, pct_diff * 2 * 255)
-        green = min(255, (self.__health / 100) * 2 * 255)
-        fill(red, green, 0, self.__hunger)
-
-        stroke(30, 120, 40)
-        rect((x1, y1), grid_w, grid_h)
-
-        if self.__sex == Sex.MALE:
-            ellipse_mode(CENTER)
-            fill(0, 0, 0, 150)
-            no_stroke()
-            ellipse((x1 + grid_w/2, y1 + grid_h/2), grid_w-10, grid_w-10)
-
-        pop()
     
 
     def __call__(self):

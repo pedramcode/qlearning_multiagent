@@ -1,4 +1,3 @@
-from p5 import *
 from world import World
 from agent import Agent
 from utils import Pos
@@ -11,27 +10,19 @@ app = Flask(__name__)
 
 world = None
 
-def setup():
+world = World("./data/maps/map2.json")
+
+for i in range(0, 50):
+    world.add_food(world.get_free_pos())
+
+for i in range(0, 30):
+    agent_x = Agent(world.get_free_pos(), world)
+    world.add_agent(agent_x)
+
+def world_runner():
     global world
-    world = World("./data/maps/map2.json")
-    
-    for i in range(0, 50):
-        world.add_food(world.get_free_pos())
-
-    for i in range(0, 30):
-        agent_x = Agent(world.get_free_pos(), world)
-        world.add_agent(agent_x)
-
-def draw():
-    global world
-
-    if world.get_step() != 0:
-        for i in range(0, 10):
-            world.update()
-        world.render()
-    else:
+    while 1:
         world.update()
-        world.render()
 
 @app.route("/data")
 def data():
@@ -51,7 +42,9 @@ def server():
     app.run("127.0.0.1", 8080)
 
 if __name__ == "__main__":
-    th = threading.Thread(target=server)
-    th.start()
-    run()
-    th.join()
+    th_server = threading.Thread(target=server)
+    th_world = threading.Thread(target=world_runner)
+    th_server.start()
+    th_world.start()
+    th_server.join()
+    th_world.join()

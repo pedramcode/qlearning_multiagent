@@ -1,4 +1,3 @@
-from p5 import *
 from .world_settings import WorldSettings
 from utils import Size, Pos
 from enum import Enum
@@ -6,6 +5,7 @@ import json
 from agent import Agent
 import random
 import numpy as np
+import math
 
 
 
@@ -35,8 +35,6 @@ class World(object):
         """
 
         if type(_input) == WorldSettings:
-            size(__settings.get_size().width(), __settings.get_size().height())
-            title(str(__settings))
             self.__settings = __settings
         else:
             data = {}
@@ -48,8 +46,6 @@ class World(object):
                 data["size"][1], 
                 data["grid"][0], 
                 data["grid"][1])
-            size(self.__settings.get_size().width(), self.__settings.get_size().height())
-            title(str(self.__settings))
             
             for blc in data["blocks"]:
                 self.__blocks.append(Pos.from_list(blc))
@@ -75,8 +71,8 @@ class World(object):
 
     def get_free_pos(self) -> Pos:
         while(True):
-            x = random.randrange(0, floor(self.get_size().width()/self.get_grid_size().width())-1)
-            y = random.randrange(0, floor(self.get_size().height()/self.get_grid_size().height())-1)
+            x = random.randrange(0, math.floor(self.get_size().width()/self.get_grid_size().width())-1)
+            y = random.randrange(0, math.floor(self.get_size().height()/self.get_grid_size().height())-1)
 
             not_block = True
             not_food = True
@@ -193,95 +189,3 @@ class World(object):
 
     def get_step(self) -> int:
         return self.__step
-    
-
-    def render(self) -> None:
-        """
-        Renders the world
-        """
-        push()
-        background(50, 50, 50)
-        self.__draw_grid()
-
-        for food in self.__foods:
-            push()
-            rect_mode(CORNER)
-            stroke(20, 120, 10)
-            stroke_weight(1)
-            fill(10, 50, 200)
-            x1 = food.x() * self.__settings.get_grid().width()
-            y1 = food.y() * self.__settings.get_grid().height()
-            margin_x = floor(self.__settings.get_grid().width() - self.__settings.get_grid().width() * 0.7)
-            margin_y = floor(self.__settings.get_grid().height() - self.__settings.get_grid().height() * 0.7)
-            rect((x1 + margin_x, y1 + margin_y), self.__settings.get_grid().width() - margin_x * 2, self.__settings.get_grid().height() - margin_y * 2)
-            pop()
-
-        for block in self.__blocks:
-            push()
-            rect_mode(CORNER)
-            no_stroke()
-            fill(100, 100, 100)
-            x1 = block.x() * self.__settings.get_grid().width()
-            y1 = block.y() * self.__settings.get_grid().height()
-            rect((x1, y1), self.__settings.get_grid().width(), self.__settings.get_grid().height())
-            pop()
-        
-        for agent in self.__agents:
-            agent.render()
-
-        if mouse_is_pressed:
-            if not self.__is_mouse_down:
-                self.__is_mouse_down = True
-                if WorldEvent.GRID_CLICKED in self.__events:
-                    self.__events[WorldEvent.GRID_CLICKED](
-                        self.__norm_pos_to_grid_pos(
-                            Pos(
-                                mouse_x,
-                                mouse_y
-                            )
-                        )
-                    )
-        else:
-            self.__is_mouse_down = False
-        
-        if self.__draw_cursor:
-            push()
-            rect_mode(CORNER)
-            no_stroke()
-            fill(255)
-            grid_pos = self.__norm_pos_to_grid_pos(
-                Pos(
-                    mouse_x,
-                    mouse_y
-                )
-            )
-            x1 = grid_pos.x() * self.__settings.get_grid().width()
-            y1 = grid_pos.y() * self.__settings.get_grid().height()
-            rect((x1, y1), self.__settings.get_grid().width(), self.__settings.get_grid().height())
-            pop()
-        pop()
-    
-
-    def __draw_grid(self) -> None:
-        """
-        Draws the main grid of the world
-        """
-
-        push()
-        stroke_weight(1)
-        stroke(120, 120, 120, 100)
-
-        for x in range(
-            self.__settings.get_grid().width(), 
-            self.__settings.get_size().width(), 
-            self.__settings.get_grid().width()):
-
-            line((x, 0), (x, self.__settings.get_size().height()))
-        
-        for y in range(
-            self.__settings.get_grid().height(), 
-            self.__settings.get_size().height(), 
-            self.__settings.get_grid().height()):
-            line((0, y), (self.__settings.get_size().width(), y))
-
-        pop()
