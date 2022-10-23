@@ -141,11 +141,11 @@ class World(object):
     
 
     def mean_health(self) -> float:
-        return round(np.mean([x.get_health() for x in self.__agents]), 2)
+        return round(numpy.nan_to_num(np.mean([x.get_health() for x in self.__agents])), 2)
     
 
     def mean_hunger(self) -> float:
-        return round(np.mean([x.get_hunger() for x in self.__agents]), 2)
+        return round(numpy.nan_to_num(np.mean([x.get_hunger() for x in self.__agents])), 2)
     
 
     def update(self, details=False) -> None:
