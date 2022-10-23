@@ -16,6 +16,7 @@ class World(object):
     __settings: WorldSettings = None
     __is_mouse_down = False
     __draw_cursor = False
+    __map_path = None
     __blocks = []
     __foods = []
     __agents = []
@@ -31,6 +32,7 @@ class World(object):
         if type(_input) == WorldSettings:
             self.__settings = __settings
         else:
+            self.__map_path = _input
             data = {}
             with open(_input, "r") as file:
                 data = json.load(file)
@@ -45,6 +47,37 @@ class World(object):
                 self.__blocks.append(Pos.from_list(blc))
             for fod in data["foods"]:
                 self.__foods.append(Pos.from_list(fod))
+
+        for i in range(0, SSetting.init_pop()):
+            agent_x = Agent(self.get_free_pos(), self)
+            self.add_agent(agent_x)
+    
+
+    def terminated(self) -> bool:
+        return len(self.__agents) == 0
+    
+
+    def reset(self):
+        if self.__map_path:
+            self.__state = []
+            data = {}
+            with open(self.__map_path, "r") as file:
+                data = json.load(file)
+            self.__settings = WorldSettings(
+                data["name"], 
+                data["size"][0], 
+                data["size"][1], 
+                data["grid"][0], 
+                data["grid"][1])
+            
+            for blc in data["blocks"]:
+                self.__blocks.append(Pos.from_list(blc))
+            for fod in data["foods"]:
+                self.__foods.append(Pos.from_list(fod))
+
+            for i in range(0, SSetting.init_pop()):
+                agent_x = Agent(self.get_free_pos(), self)
+                self.add_agent(agent_x)
     
 
     def is_food_at(self, pos: Pos, remove=False) -> bool:

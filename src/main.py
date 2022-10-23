@@ -17,14 +17,12 @@ world = World("./data/maps/map2.json")
 for i in range(0, 50):
     world.add_food(world.get_free_pos())
 
-for i in range(0, SSetting.init_pop()):
-    agent_x = Agent(world.get_free_pos(), world)
-    world.add_agent(agent_x)
-
 def world_runner():
     global world
     while 1:
         world.update()
+        if world.terminated():
+            world.reset()
 
 @app.route("/data")
 def data():
