@@ -40,7 +40,7 @@ class Size():
         """
             Set height
         """
-        self.__width = height
+        self.__width = width
 
 
 class Pos(object):
