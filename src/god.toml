@@ -62,7 +62,7 @@ HEAL_AFTER_EAT=5
 HUNGER_AFTER_FOOD=5
 
 # Food generate chance in each step
-FOOD_GENERATE=0.1
+FOOD_GENERATE=0.3
 # Min food generate
 FOOD_MIN=1
 # Min food generate
