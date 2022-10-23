@@ -4,10 +4,8 @@ from utils import Pos, SSetting
 import random
 from flask import Flask, send_from_directory
 import threading
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+
 
 app = Flask(__name__)
 
