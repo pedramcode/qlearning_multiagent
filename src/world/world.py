@@ -1,5 +1,5 @@
 from .world_settings import WorldSettings
-from utils import Size, Pos
+from utils import Size, Pos, SSetting
 from enum import Enum
 import json
 from agent import Agent
@@ -149,8 +149,8 @@ class World(object):
     
 
     def update(self, details=False) -> None:
-        if random.random() > 0.5:
-            for i in range(1, 5):
+        if random.random() > (1.0-SSetting.food_gen()):
+            for i in range(SSetting.food_min(), SSetting.food_max()):
                 self.add_food(self.get_free_pos())
 
         if len(self.__agents) != 0:

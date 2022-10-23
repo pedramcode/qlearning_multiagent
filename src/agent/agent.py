@@ -1,4 +1,4 @@
-from utils import Pos
+from utils import Pos, SSetting
 from .brain import Brain
 import random
 from enum import Enum
@@ -25,17 +25,25 @@ class Agent(object):
     __vision = None
     __sex = None
     __life_span = None
+    __sex_halt = None
 
 
     def __init__(self, pos: Pos, world):
         self.__pos = pos
         self.__world = world
         self.__brain = Brain(7, 4)
-        self.__health = random.randrange(10, 101)
-        self.__hunger = random.randrange(10, 101)
-        self.__vision = random.randrange(1, 30)
-        self.__sex = Sex.MALE if random.random() > 0.5 else Sex.FEMALE
-        self.__life_span = random.randrange(15, 100)
+        self.__health = random.uniform(
+            (SSetting.max_health()*0.3), 
+            SSetting.max_health())
+        self.__hunger = random.uniform(
+            int(SSetting.max_hunger()*0.3), 
+            SSetting.max_hunger())
+        self.__vision = random.uniform(SSetting.min_vision(), SSetting.max_vision())
+        self.__sex = Sex.MALE if random.random() > SSetting.male_gender_probability() else Sex.FEMALE
+        self.__life_span = random.uniform(
+            SSetting.min_life_span_random(),
+            SSetting.max_life_span_random())
+        self.__sex_halt = 0
     
 
     def is_dead(self) -> bool:
@@ -52,30 +60,32 @@ class Agent(object):
     
     def move(self, dir: Dir) -> None:
         state = self()
+        hit_wall_dmg = SSetting.hit_wall_damage()
+        walk_hunger = SSetting.walking_hunger()
         if dir == Dir.TOP:
             if state[3] == 1:
-                self.damage(1)
+                self.damage(hit_wall_dmg)
             else:
                 self.__pos.set_y(self.__pos.y()-1)
-                self.hungry(0.3)
+                self.hungry(walk_hunger)
         if dir == Dir.RIGHT:
             if state[4] == 1:
-                self.damage(1)
+                self.damage(hit_wall_dmg)
             else:
                 self.__pos.set_x(self.__pos.x()+1)
-                self.hungry(0.3)
+                self.hungry(walk_hunger)
         if dir == Dir.BOTTOM:
             if state[5] == 1:
-                self.damage(1)
+                self.damage(hit_wall_dmg)
             else:
                 self.__pos.set_y(self.__pos.y()+1)
-                self.hungry(0.3)
+                self.hungry(walk_hunger)
         if dir == Dir.LEFT:
             if state[6] == 1:
-                self.damage(1)
+                self.damage(hit_wall_dmg)
             else:
                 self.__pos.set_x(self.__pos.x()-1)
-                self.hungry(0.3)
+                self.hungry(walk_hunger)
     
 
     def get_mate(self):
@@ -84,61 +94,88 @@ class Agent(object):
         for agent in self.__world.get_agents():
             if agent == self:
                 continue
-            if Pos.distance(self.__pos, agent.get_pos()) <= 2:
+            if Pos.distance(self.__pos, agent.get_pos()) <= SSetting.mate_distance():
                 return agent
         return res
+    
+
+    def get_sex_halt(self):
+        return self.__sex_halt
+    
+
+    def set_sex_halt(self, n):
+        self.__sex_halt = n
 
     
     def update(self) -> None:
         self.__life_span -= 1
         if self.__life_span <= 0:
-            if random.random() > 0.9:
+            if random.random() >= (1.0 - SSetting.kill_end_lifespan_threshold()):
                 self.__health = 0
                 self.__hunger = 0
             else:
-                self.damage(1)
+                self.damage(SSetting.eldery_damage())
 
-        if self.__hunger < 40:
-            self.damage(0.3)
-        if self.__health < 90 and self.__hunger > 90:
-            self.heal(5)
-            self.hungry(3)
+        if self.__hunger < SSetting.unhealthy_hunger():
+            self.damage(SSetting.unhealthy_hunger_damage())
+        if self.__health < SSetting.good_diet_heal_health_less() and self.__hunger > SSetting.good_diet_heal_hunger_more():
+            self.heal(SSetting.good_diet_heal_amount())
+            self.hungry(SSetting.good_diet_heal_hunger_amount())
+
         
+        if self.__sex_halt > 0:
+            self.__sex_halt -= 1
+
 
         # Sex
-        horniness = 0 if self.__world.mean_hunger() < 30 else 0.4
+        horniness = (1.0 - SSetting.sex_horny_hunger_horny()) if self.__hunger < SSetting.sex_horny_hunger() else (1.0 - SSetting.sex_horniness())
         horny = random.random() > horniness
-        if horny:
+        if horny and self.__sex_halt<=0:
             mate = self.get_mate()
-            if mate:
+            if mate and mate.get_sex_halt()<=0:
                 is_gay = mate.get_sex() == self.__sex
                 if not is_gay:
-                    if self.__health > 60 and mate.get_health() > 60:
+                    sex_min_health = SSetting.sex_min_health()
+                    if self.__health > sex_min_health and mate.get_health() > sex_min_health:
                         # Make baby
-                        self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
-                        self.hungry(2)
-                        mate.hungry(2)
+                        is_healthy_parents = \
+                            self.get_health() + mate.get_health() >= SSetting.sex_good_parent_health_sum() and \
+                            self.get_hunger() + mate.get_hunger() >= SSetting.sex_good_parent_hunger_sum()
+                        if is_healthy_parents:
+                            for _ in range(SSetting.sex_good_parent_min_baby(), SSetting.sex_good_parent_max_baby()+1):
+                                self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
+                        else:
+                            if random.random() < (1.0 - SSetting.sex_bad_parent_died_baby()):
+                                self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
+
+                        self.hungry(SSetting.sex_norm_hunger())
+                        mate.hungry(SSetting.sex_norm_hunger())
                         
                         # Damage female
                         if self.__sex == Sex.FEMALE:
-                            self.damage(3)
+                            self.damage(SSetting.sex_female_damage())
                         elif mate.get_sex() == Sex.FEMALE:
-                            mate.damage(3)
+                            mate.damage(SSetting.sex_female_damage())
                 elif is_gay:
                     # Gay sex
-                    self.hungry(2)
-                    mate.hungry(2)
+                    self.hungry(SSetting.sex_norm_hunger())
+                    mate.hungry(SSetting.sex_norm_hunger())
+
+                mate.set_sex_halt(SSetting.sex_halt_steps())
+                self.__sex_halt = SSetting.sex_halt_steps()
+
             else:
                 # Mastribate
-                self.hungry(2.1)
+                self.hungry(SSetting.sex_mast_hunger())
+                self.__sex_halt = SSetting.sex_halt_steps()
 
 
         # Choose action
-        eps = 0.2
+        eps = SSetting.eps_greed()
         dice = random.random()
         if self.__world.is_food_at(self.__pos, True):
-            self.heal(5)
-            self.eat(5)
+            self.heal(SSetting.heal_after_food())
+            self.eat(SSetting.eat_after_food())
 
         if dice > eps:
             res = self.__brain.pulse(self())
@@ -160,7 +197,7 @@ class Agent(object):
             elif max_index == 3:
                 self.move(Dir.LEFT)
         else:
-            inx = random.randrange(0, 4)
+            inx = random.uniform(0, 4)
             if inx == 0:
                 self.move(Dir.TOP)
             elif inx == 1:
@@ -187,8 +224,8 @@ class Agent(object):
 
     def heal(self, amount) -> None:
         self.__health = self.__health + abs(amount)
-        if self.__health > 100:
-            self.__health = 100
+        if self.__health > SSetting.max_health():
+            self.__health = SSetting.max_health()
     
 
     def hungry(self, amount):
@@ -199,8 +236,8 @@ class Agent(object):
 
     def eat(self, amount) -> None:
         self.__hunger = self.__hunger + abs(amount)
-        if self.__hunger > 100:
-            self.__hunger = 100
+        if self.__hunger > SSetting.max_hunger():
+            self.__hunger = SSetting.max_hunger()
     
 
     def __call__(self):

@@ -1,9 +1,13 @@
 from world import World
 from agent import Agent
-from utils import Pos
+from utils import Pos, SSetting
 import random
 from flask import Flask, send_from_directory
 import threading
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -15,7 +19,7 @@ world = World("./data/maps/map2.json")
 for i in range(0, 50):
     world.add_food(world.get_free_pos())
 
-for i in range(0, 30):
+for i in range(0, SSetting.init_pop()):
     agent_x = Agent(world.get_free_pos(), world)
     world.add_agent(agent_x)
 
@@ -39,7 +43,7 @@ def index():
     return send_from_directory("./html", "index.html")
 
 def server():
-    app.run("127.0.0.1", 8080)
+    app.run(SSetting.http_host(), SSetting.http_port())
 
 if __name__ == "__main__":
     th_server = threading.Thread(target=server)
