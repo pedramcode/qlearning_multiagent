@@ -96,6 +96,9 @@ SEX_PARENT_HEALTHY_BABY_MAX=5
 # If parents where weak there is this chance to give birth to a dead baby:
 SEX_PARENT_UNHEALTHY_DIED_BABY=0.3
 
+# Normal baby dead (from healthy parents)
+SEX_NORMAL_BABY_DEAD=0.1
+
 # Cant do a new sex after sex for n steps:
 SEX_HALT_STEPS=1
 
