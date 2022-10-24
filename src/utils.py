@@ -169,7 +169,7 @@ class SSetting:
     @staticmethod
     def mate_distance():
         dt = SSetting.load_data()
-        return float(dt["env"].get("MATE_DISTANCE", "2"))
+        return float(dt["sex"].get("MATE_DISTANCE", "2"))
     
     @staticmethod
     def kill_end_lifespan_threshold():
