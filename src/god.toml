@@ -92,7 +92,7 @@ SEX_PARENT_HUNGER_SUM=100
 # There is this chance to give birth min of:
 SEX_PARENT_HEALTHY_BABY_MIN=1
 # And max of:
-SEX_PARENT_HEALTHY_BABY_MAX=5
+SEX_PARENT_HEALTHY_BABY_MAX=3
 # If parents where weak there is this chance to give birth to a dead baby:
 SEX_PARENT_UNHEALTHY_DIED_BABY=0.3
 
@@ -103,7 +103,7 @@ SEX_NORMAL_BABY_DEAD=0.1
 SEX_HALT_STEPS=3
 
 # Minimum health required to sex
-SEX_MIN_HEALTH=20
+SEX_MIN_HEALTH=60
 
 # Distance to find a mate
 MATE_DISTANCE=1
