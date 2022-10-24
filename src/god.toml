@@ -103,7 +103,7 @@ SEX_NORMAL_BABY_DEAD=0.1
 SEX_HALT_STEPS=3
 
 # Minimum health required to sex
-SEX_MIN_HEALTH=60
+SEX_MIN_HEALTH=40
 
 # Distance to find a mate
 MATE_DISTANCE=1

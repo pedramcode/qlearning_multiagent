@@ -53,11 +53,7 @@ class World(object):
             agent_x = Agent(self.get_free_pos(), self)
             self.add_agent(agent_x)
         
-        self.__event_list = {
-            WorldEvent.BIRTH: 0,
-            WorldEvent.DEAD_CHILD: 0,
-            WorldEvent.TOTAL_DEAD: 0,
-        }
+        self.__init_event()
     
 
     def terminated(self) -> bool:
@@ -128,6 +124,14 @@ class World(object):
             i+=1
 
         return Pos(x, y) if not (x==None or y==None) else None
+    
+
+    def __init_event(self):
+        self.__event_list = {
+            WorldEvent.BIRTH: 0,
+            WorldEvent.DEAD_CHILD: 0,
+            WorldEvent.TOTAL_DEAD: 0,
+        }
                      
 
     
@@ -225,6 +229,8 @@ class World(object):
             "dead_born": self.__event_list[WorldEvent.DEAD_CHILD],
             "birth": self.__event_list[WorldEvent.BIRTH],
         })
+
+        self.__init_event()
 
         if details:
             print(self.get_last_state())
