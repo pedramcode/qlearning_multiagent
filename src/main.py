@@ -59,9 +59,9 @@ def server():
     app.run(SSetting.http_host(), SSetting.http_port())
 
 if __name__ == "__main__":
-    th_server = threading.Thread(target=server)
     th_world = threading.Thread(target=world_runner)
-    th_server.start()
+    th_server = threading.Thread(target=server)
     th_world.start()
-    th_server.join()
+    th_server.start()
     th_world.join()
+    th_server.join()
