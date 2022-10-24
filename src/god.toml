@@ -24,7 +24,7 @@ MAX_VISION=50
 INIT_POPULATION=30
 
 # Minimum lifespan amount (steps) - from range
-MIN_LIFESPAN_RND=60
+MIN_LIFESPAN_RND=15
 # Maximum lifespan amount (steps) - to range
 MAX_LIFESPAN_RND=100
 
@@ -67,6 +67,13 @@ FOOD_GENERATE=0.3
 FOOD_MIN=1
 # Min food generate
 FOOD_MAX=5
+
+# Earthquack Chance
+EARTHQUACK_CHANCE=0.001
+# Earthquack min percent random
+EARTHQUACK_MIN_DEAD=1
+# Earthquack max percent random
+EARTHQUACK_MAX_DEAD=10
 
 
 [sex]
