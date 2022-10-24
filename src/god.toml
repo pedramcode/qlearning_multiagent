@@ -83,7 +83,7 @@ SEX_HORNY_HUNGER=10
 # Getting horny by this probability:
 SEX_HORNY_HUNGER_HORNY=0.9
 # Else get horny by this probability:
-SEX_HORNINESS=0.4
+SEX_HORNINESS=0.5
 
 # If parents health add up to:
 SEX_PARENT_HEALTH_SUM=100
@@ -103,7 +103,7 @@ SEX_NORMAL_BABY_DEAD=0.1
 SEX_HALT_STEPS=3
 
 # Minimum health required to sex
-SEX_MIN_HEALTH=40
+SEX_MIN_HEALTH=50
 
 # Distance to find a mate
 MATE_DISTANCE=1
