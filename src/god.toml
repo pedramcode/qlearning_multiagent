@@ -32,7 +32,7 @@ MAX_LIFESPAN_RND=100
 MALE_GENDER_PROB=0.4
 
 # Hitting wall damage
-HIT_WALL_DAMAGE=0.2
+HIT_WALL_DAMAGE=1
 # Amount of energy takes to walk each step
 WALKING_HUNGER=0.5
 
