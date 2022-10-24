@@ -146,8 +146,11 @@ class Agent(object):
                             self.get_hunger() + mate.get_hunger() >= SSetting.sex_good_parent_hunger_sum()
                         if is_healthy_parents:
                             for _ in range(SSetting.sex_good_parent_min_baby(), SSetting.sex_good_parent_max_baby()+1):
-                                self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
-                                self.__world.trigger_event(WorldEvent.BIRTH)
+                                if random.random() <= SSetting.normal_parent_baby_dead():
+                                    self.__world.trigger_event(WorldEvent.DEAD_CHILD)
+                                else:
+                                    self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
+                                    self.__world.trigger_event(WorldEvent.BIRTH)
                         else:
                             if random.random() < (1.0 - SSetting.sex_bad_parent_died_baby()):
                                 self.__world.add_agent(Agent(self.__pos.copy(), self.__world))

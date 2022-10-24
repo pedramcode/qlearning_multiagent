@@ -214,67 +214,67 @@ class SSetting:
     @staticmethod
     def sex_horny_hunger():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_HORNY_HUNGER", "30"))
+        return float(dt["sex"].get("SEX_HORNY_HUNGER", "30"))
     
     @staticmethod
     def sex_horny_hunger_horny():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_HORNY_HUNGER_HORNY", "0.7"))
+        return float(dt["sex"].get("SEX_HORNY_HUNGER_HORNY", "0.7"))
     
     @staticmethod
     def sex_horniness():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_HORNINESS", "0.5"))
+        return float(dt["sex"].get("SEX_HORNINESS", "0.5"))
     
     @staticmethod
     def sex_min_health():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_MIN_HEALTH", "60"))
+        return float(dt["sex"].get("SEX_MIN_HEALTH", "60"))
     
     @staticmethod
     def sex_norm_hunger():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_NORM_HUNGRY", "2"))
+        return float(dt["sex"].get("SEX_NORM_HUNGRY", "2"))
     
     @staticmethod
     def sex_female_damage():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_FEMALE_DAMAGE", "3"))
+        return float(dt["sex"].get("SEX_FEMALE_DAMAGE", "3"))
     
     @staticmethod
     def sex_mast_hunger():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_MASTR_HUNGER", "2"))
+        return float(dt["sex"].get("SEX_MASTR_HUNGER", "2"))
     
     @staticmethod
     def sex_halt_steps():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_HALT_STEPS", "5"))
+        return float(dt["sex"].get("SEX_HALT_STEPS", "5"))
 
     @staticmethod
     def sex_good_parent_health_sum():
         dt = SSetting.load_data()
-        return int(dt["env"].get("SEX_PARENT_HEALTH_SUM", "90"))
+        return int(dt["sex"].get("SEX_PARENT_HEALTH_SUM", "90"))
     
     @staticmethod
     def sex_good_parent_hunger_sum():
         dt = SSetting.load_data()
-        return int(dt["env"].get("SEX_PARENT_HUNGER_SUM", "90"))
+        return int(dt["sex"].get("SEX_PARENT_HUNGER_SUM", "90"))
     
     @staticmethod
     def sex_good_parent_min_baby():
         dt = SSetting.load_data()
-        return int(dt["env"].get("SEX_PARENT_HEALTHY_BABY_MIN", "1"))
+        return int(dt["sex"].get("SEX_PARENT_HEALTHY_BABY_MIN", "1"))
     
     @staticmethod
     def sex_good_parent_max_baby():
         dt = SSetting.load_data()
-        return int(dt["env"].get("SEX_PARENT_HEALTHY_BABY_MAX", "3"))
+        return int(dt["sex"].get("SEX_PARENT_HEALTHY_BABY_MAX", "3"))
     
     @staticmethod
     def sex_bad_parent_died_baby():
         dt = SSetting.load_data()
-        return float(dt["env"].get("SEX_PARENT_UNHEALTHY_DIED_BABY", "3"))
+        return float(dt["sex"].get("SEX_PARENT_UNHEALTHY_DIED_BABY", "3"))
     
     @staticmethod
     def min_vision():
@@ -315,3 +315,8 @@ class SSetting:
     def food_max():
         dt = SSetting.load_data()
         return int(dt["env"].get("FOOD_MAX", "3"))
+    
+    @staticmethod
+    def normal_parent_baby_dead():
+        dt = SSetting.load_data()
+        return float(dt["sex"].get("SEX_NORMAL_BABY_DEAD", "0.1"))
