@@ -81,9 +81,9 @@ EARTHQUACK_MAX_DEAD=10
 # If hunger was less than below amount:
 SEX_HORNY_HUNGER=10
 # Getting horny by this probability:
-SEX_HORNY_HUNGER_HORNY=1
+SEX_HORNY_HUNGER_HORNY=0.9
 # Else get horny by this probability:
-SEX_HORNINESS=0.9
+SEX_HORNINESS=0.4
 
 # If parents health add up to:
 SEX_PARENT_HEALTH_SUM=100
