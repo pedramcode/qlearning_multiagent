@@ -5,64 +5,202 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plot</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #303030;
+        }
+        .container{
+            background-color: rgb(231, 231, 231);
+            width: 90%;
+            height: 90%;
+            padding:1em;
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: max-content max-content max-content;
+            grid-template-areas: 
+                "state state state"
+                "state state state"
+                "gender sex other";
+            overflow-y: auto;
+            gap:1em;
+        }
+        .card{
+            background: white;
+            padding: 1.3em;
+            border-radius: 10px;
+            border: 1px solid darkgoldenrod
+        }
+        .chart{
+            grid-area: state;
+        }
+        .gender{
+            grid-area: gender;
+        }
+        .sex{
+            grid-area: sex;
+        }
+        .other{
+            grid-area: other;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="myChart" width="600"></canvas>
+    <div class="container">
+        <div class="card chart">
+            <canvas id="stateChart" height="100%"></canvas>
+        </div>
+        <div class="card gender">
+            <canvas id="genderChart" height="100%"></canvas>
+        </div>
+        <div class="card sex">
+            <canvas id="sexChart" height="300%"></canvas>
+        </div>
+        <div class="card other"></div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
-        let myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Population',
-                    data: [],
-                    borderWidth: 2,
-                    borderColor:'red',
-                },{
-                    label: 'Health',
-                    data: [],
-                    borderWidth: 2,
-                    borderColor:'green',
-                },{
-                    label: 'Hunger',
-                    data: [],
-                    borderWidth: 2,
-                    borderColor:'cyan',
-                },{
-                    label: 'Food',
-                    data: [],
-                    borderWidth: 2,
-                    borderColor:'purple',
-                }]
-            },
-            options: {
-                responsive: true,
-                title: {
-                    display: true,
-                    text: "Chart.js - Dynamically Update Chart Via Ajax Requests",
+        setTimeout(function(){
+            const sctx = document.getElementById('stateChart').getContext('2d');
+            const gctx = document.getElementById('genderChart').getContext('2d');
+            const xctx = document.getElementById('sexChart').getContext('2d');
+            
+            let stateChart = new Chart(sctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Population',
+                        data: [],
+                        borderWidth: 2,
+                        borderColor:'red',
+                    },{
+                        label: 'Health',
+                        data: [],
+                        borderWidth: 2,
+                        borderColor:'green',
+                    },{
+                        label: 'Hunger',
+                        data: [],
+                        borderWidth: 2,
+                        borderColor:'cyan',
+                    },{
+                        label: 'Food',
+                        data: [],
+                        borderWidth: 2,
+                        borderColor:'purple',
+                    }]
                 },
-                legend: {
-                    display: false
-                },
-            }
-        });
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: "World State",
+                    },
+                    legend: {
+                        display: false
+                    },
+                }
+            });
 
-        setInterval(function(){
-            $.ajax({
-                url: "http://localhost:8080/data",
-                method: "GET",
-            }).done(function(dt){
-                const rdata = dt
-                myChart.data.labels = rdata.steps
-                myChart.data.datasets[0].data = rdata.pop
-                myChart.data.datasets[1].data = rdata.pop_health
-                myChart.data.datasets[2].data = rdata.pop_hunger
-                myChart.data.datasets[3].data = rdata.food_count
-                myChart.update();
-            })
+            let genderChart = new Chart(gctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Male', 'Female'],
+                    datasets: [{
+                        label: 'Gender',
+                        data: [],
+                        borderWidth: 1,
+                        backgroundColor: [
+                            "blue",
+                            "pink",
+                        ],
+                        borderColor: [
+                            "navy",
+                            "purple",
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: "Gender state",
+                    },
+                    legend: {
+                        display: false
+                    },
+                }
+            });
+
+            let deadBornChart = new Chart(xctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'normal dead',
+                        data: [],
+                        borderWidth: 2,
+                        borderColor:'red',
+                    },{
+                        label: 'born dead',
+                        data: [],
+                        borderWidth: 2,
+                        borderColor:'purple',
+                    },{
+                        label: 'born',
+                        data: [],
+                        borderWidth: 2,
+                        borderColor:'green',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: "Born/Dead State",
+                    },
+                    legend: {
+                        display: false
+                    },
+                }
+            });
+
+            setInterval(function(){
+                $.ajax({
+                    url: "http://localhost:8080/data",
+                    method: "GET",
+                }).done(function(dt){
+                    const rdata = dt
+                    stateChart.data.labels = rdata.steps
+                    stateChart.data.datasets[0].data = rdata.pop
+                    stateChart.data.datasets[1].data = rdata.pop_health
+                    stateChart.data.datasets[2].data = rdata.pop_hunger
+                    stateChart.data.datasets[3].data = rdata.food_count
+                    
+                    genderChart.data.datasets[0].data = [rdata.male_count[rdata.male_count.length-1], rdata.female_count[rdata.female_count.length-1]]
+                    
+                    deadBornChart.data.labels = rdata.steps
+                    deadBornChart.data.datasets[0].data = rdata.total_dead
+                    deadBornChart.data.datasets[1].data = rdata.dead_born
+                    deadBornChart.data.datasets[2].data = rdata.birth
+
+                    stateChart.update();
+                    genderChart.update();
+                    deadBornChart.update();
+                })
+            }, 1000)
         }, 500)
     </script>
 </body>

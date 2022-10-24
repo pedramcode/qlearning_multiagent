@@ -1,2 +1,2 @@
-from .agent import Agent, Dir
+from .agent import Agent, Dir, Sex
 from .brain import Brain

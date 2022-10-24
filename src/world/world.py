@@ -1,8 +1,8 @@
 from .world_settings import WorldSettings
-from utils import Size, Pos, SSetting
+from utils import Size, Pos, SSetting, WorldEvent
 from enum import Enum
 import json
-from agent import Agent
+from agent import Agent, Sex
 import random
 import numpy as np
 import math
@@ -22,6 +22,7 @@ class World(object):
     __agents = []
     __state = []
     __step = 0
+    __event_list = {}
 
     def __init__(self, _input):
         """
@@ -51,10 +52,20 @@ class World(object):
         for i in range(0, SSetting.init_pop()):
             agent_x = Agent(self.get_free_pos(), self)
             self.add_agent(agent_x)
+        
+        self.__event_list = {
+            WorldEvent.BIRTH: 0,
+            WorldEvent.DEAD_CHILD: 0,
+            WorldEvent.TOTAL_DEAD: 0,
+        }
     
 
     def terminated(self) -> bool:
         return len(self.__agents) == 0
+    
+
+    def trigger_event(self, event, val=1):
+        self.__event_list[event] += val
     
 
     def reset(self):
@@ -91,6 +102,10 @@ class World(object):
 
 
     def get_free_pos(self) -> Pos:
+        max_tries = 5
+        i = 0
+        x = None
+        y = None
         while(True):
             x = random.randrange(0, math.floor(self.get_size().width()/self.get_grid_size().width())-1)
             y = random.randrange(0, math.floor(self.get_size().height()/self.get_grid_size().height())-1)
@@ -108,10 +123,11 @@ class World(object):
                     not_food = False
                     break
             
-            if not_block and not_food:
+            if i > max_tries or not_block and not_food:
                 break
+            i+=1
 
-        return Pos(x, y)
+        return Pos(x, y) if not (x==None or y==None) else None
                      
 
     
@@ -184,7 +200,9 @@ class World(object):
     def update(self, details=False) -> None:
         if random.random() > (1.0-SSetting.food_gen()):
             for i in range(SSetting.food_min(), SSetting.food_max()):
-                self.add_food(self.get_free_pos())
+                free_space = self.get_free_pos()
+                if(free_space):
+                    self.add_food(free_space)
 
         if len(self.__agents) != 0:
             for i in range(len(self.__agents)-1, -1, -1):
@@ -194,12 +212,18 @@ class World(object):
                     del self.__agents[i]
                     continue
                 
+        male_c = len([0 for x in self.__agents if x.get_sex() == Sex.MALE])
         self.__state.append({
             "step": self.__step,
             "pop": len(self.__agents),
             "pop_health": self.mean_health(),
             "pop_hunger": self.mean_hunger(),
             "food_count": len(self.__foods),
+            "male_count": male_c,
+            "female_count": abs(len(self.__agents)-male_c),
+            "total_dead": self.__event_list[WorldEvent.TOTAL_DEAD],
+            "dead_born": self.__event_list[WorldEvent.DEAD_CHILD],
+            "birth": self.__event_list[WorldEvent.BIRTH],
         })
 
         if details:

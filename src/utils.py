@@ -1,6 +1,13 @@
 import math
 import os
 import toml
+from enum import Enum
+
+
+class WorldEvent(Enum):
+    DEAD_CHILD = 0
+    BIRTH = 1
+    TOTAL_DEAD = 2
 
 
 class Size():

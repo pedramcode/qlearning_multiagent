@@ -1,4 +1,4 @@
-from utils import Pos, SSetting
+from utils import Pos, SSetting, WorldEvent
 from .brain import Brain
 import random
 from enum import Enum
@@ -39,7 +39,7 @@ class Agent(object):
             int(SSetting.max_hunger()*0.3), 
             SSetting.max_hunger())
         self.__vision = random.uniform(SSetting.min_vision(), SSetting.max_vision())
-        self.__sex = Sex.MALE if random.random() > SSetting.male_gender_probability() else Sex.FEMALE
+        self.__sex = Sex.MALE if random.random() > (1.0-SSetting.male_gender_probability()) else Sex.FEMALE
         self.__life_span = random.uniform(
             SSetting.min_life_span_random(),
             SSetting.max_life_span_random())
@@ -47,7 +47,10 @@ class Agent(object):
     
 
     def is_dead(self) -> bool:
-        return self.__health <= 0
+        res = self.__health <= 0
+        if res:
+            self.__world.trigger_event(WorldEvent.TOTAL_DEAD)
+        return res
 
     
     def get_sex(self) -> Sex:
@@ -144,9 +147,13 @@ class Agent(object):
                         if is_healthy_parents:
                             for _ in range(SSetting.sex_good_parent_min_baby(), SSetting.sex_good_parent_max_baby()+1):
                                 self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
+                                self.__world.trigger_event(WorldEvent.BIRTH)
                         else:
                             if random.random() < (1.0 - SSetting.sex_bad_parent_died_baby()):
                                 self.__world.add_agent(Agent(self.__pos.copy(), self.__world))
+                                self.__world.trigger_event(WorldEvent.BIRTH)
+                            else:
+                                self.__world.trigger_event(WorldEvent.DEAD_CHILD)
 
                         self.hungry(SSetting.sex_norm_hunger())
                         mate.hungry(SSetting.sex_norm_hunger())
@@ -158,16 +165,20 @@ class Agent(object):
                             mate.damage(SSetting.sex_female_damage())
                 elif is_gay:
                     # Gay sex
-                    self.hungry(SSetting.sex_norm_hunger())
-                    mate.hungry(SSetting.sex_norm_hunger())
+                    # self.__world.trigger_event(WorldEvent.GAY_SEX)
+                    # self.hungry(SSetting.sex_norm_hunger())
+                    # mate.hungry(SSetting.sex_norm_hunger())
+                    ...
 
                 mate.set_sex_halt(SSetting.sex_halt_steps())
                 self.__sex_halt = SSetting.sex_halt_steps()
 
             else:
                 # Mastribate
-                self.hungry(SSetting.sex_mast_hunger())
-                self.__sex_halt = SSetting.sex_halt_steps()
+                # self.__world.trigger_event(WorldEvent.SOLO_SEX)
+                # self.hungry(SSetting.sex_mast_hunger())
+                # self.__sex_halt = SSetting.sex_halt_steps()
+                ...
 
 
         # Choose action

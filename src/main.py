@@ -26,13 +26,30 @@ def world_runner():
 
 @app.route("/data")
 def data():
-    data = world.get_state()
+    data = world.get_state()[-30:]
     steps = [d["step"] for d in data]
     pop = [d["pop"] for d in data]
     pop_health = [d["pop_health"] for d in data]
     pop_hunger = [d["pop_hunger"] for d in data]
     food_count = [d["food_count"] for d in data]
-    return {"steps":steps, "pop":pop, "pop_health": pop_health, "pop_hunger":pop_hunger, "food_count":food_count}
+    male_count = [d["male_count"] for d in data]
+    female_count = [d["female_count"] for d in data]
+    dead_born = [d["dead_born"] for d in data]
+    total_dead = [d["total_dead"] for d in data]
+    birth = [d["birth"] for d in data]
+    res = {
+        "steps":steps, 
+        "pop":pop, 
+        "pop_health": pop_health, 
+        "pop_hunger":pop_hunger, 
+        "food_count":food_count,
+        "male_count":male_count,
+        "female_count":female_count,
+        "dead_born":dead_born,
+        "total_dead":total_dead,
+        "birth":birth,
+        }
+    return res
 
 @app.route("/")
 def index():
