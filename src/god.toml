@@ -100,7 +100,7 @@ SEX_PARENT_UNHEALTHY_DIED_BABY=0.3
 SEX_NORMAL_BABY_DEAD=0.1
 
 # Cant do a new sex after sex for n steps:
-SEX_HALT_STEPS=1
+SEX_HALT_STEPS=3
 
 # Minimum health required to sex
 SEX_MIN_HEALTH=20
